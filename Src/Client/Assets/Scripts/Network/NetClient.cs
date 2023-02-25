@@ -60,8 +60,9 @@ namespace Network
 
         public PackageHandler packageHandler = new PackageHandler(null);
 
-        void Awake()
+        public override void Awake()
         {
+            base.Awake();
             running = true;
         }
 
