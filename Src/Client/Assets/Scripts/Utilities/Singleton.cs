@@ -46,7 +46,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : Component
 
     }
 
-    public virtual void Awake()
+    void Awake()
     {
         DontDestroyOnLoad(gameObject);
         if (instance == null)
@@ -57,9 +57,11 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : Component
         {
             GameObject.Destroy(gameObject);
         }
+        OnAwake();
     }
 
-    protected virtual void OnStart()
+    protected virtual void OnAwake()
     {
+
     }
     }

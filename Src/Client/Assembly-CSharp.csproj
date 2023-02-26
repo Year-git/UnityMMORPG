@@ -66,11 +66,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Launch.cs" />
+    <Compile Include="Assets\Scripts\Managers\DataManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\SceneManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\ViewManager.cs" />
+    <Compile Include="Assets\Scripts\Models\User.cs" />
     <Compile Include="Assets\Scripts\Network\NetClient.cs" />
-    <Compile Include="Assets\Scripts\NewBehaviourScript.cs" />
-    <Compile Include="Assets\Scripts\Scene\SceneManager.cs" />
+    <Compile Include="Assets\Scripts\Resloader.cs" />
+    <Compile Include="Assets\Scripts\Services\UserService.cs" />
+    <Compile Include="Assets\Scripts\UIViews\MessageBox.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UILoading.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UILogin.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UIMessageBox.cs" />
     <Compile Include="Assets\Scripts\Utilities\GameUtil.cs" />
     <Compile Include="Assets\Scripts\Utilities\Singleton.cs" />
+    <Compile Include="Assets\Scripts\Utilities\UnityLogger.cs" />
     <None Include="Assets\Shader\UITest.shader" />
     <None Include="Assets\Shader\Lightmap\Lightmap.shader" />
     <None Include="Assets\Shader\Particle\ParticleAdditive.shader" />

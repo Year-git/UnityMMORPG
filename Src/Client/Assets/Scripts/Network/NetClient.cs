@@ -60,13 +60,12 @@ namespace Network
 
         public PackageHandler packageHandler = new PackageHandler(null);
 
-        public override void Awake()
+        protected override void OnAwake()
         {
-            base.Awake();
             running = true;
         }
 
-        protected override void OnStart()
+        void Start()
         {
             MessageDistributer.Instance.ThrowException = true;
         }
@@ -178,7 +177,6 @@ namespace Network
 
         public void CloseConnection(int errCode)
         {
-            Debug.LogWarning("CloseConnection(), errorCode: " + errCode.ToString());
             this.connecting = false;
             if (this.clientSocket != null)
             {

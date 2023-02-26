@@ -83,8 +83,9 @@ GameObject:
   - component: {fileID: 1148154058988174245}
   - component: {fileID: 1148154058988174246}
   - component: {fileID: 1148154058988174247}
+  - component: {fileID: 114882452090561506}
   m_Layer: 5
-  m_Name: UILoading 1
+  m_Name: UILoading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,6 +143,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114882452090561506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148154058988174244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cd8e30ad891b784f82853fea9ce29e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollbar: {fileID: 3849779954498688537}
+  text: {fileID: 3849779954472634233}
 --- !u!1 &1148154059190130357
 GameObject:
   m_ObjectHideFlags: 0
