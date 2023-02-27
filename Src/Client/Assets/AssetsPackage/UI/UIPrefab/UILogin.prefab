@@ -437,7 +437,7 @@ MonoBehaviour:
   m_Text: 
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
-  m_ReadOnly: 1
+  m_ReadOnly: 0
 --- !u!1 &1904891286646719484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,8 +1054,9 @@ MonoBehaviour:
   username: {fileID: 2032537996803758118}
   password: {fileID: 5924081813544431069}
   passwordConfirm: {fileID: 9192750077824406223}
+  buttonLogin: {fileID: 9006350014826272805}
   buttonRegister: {fileID: 2453674196526033158}
-  uiLogin: {fileID: 0}
+  buttonBack: {fileID: 6905322535541785793}
 --- !u!1 &4510444768899153368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1607,7 +1608,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7617762279390966899}
-  - component: {fileID: 5676011869928404357}
   m_Layer: 5
   m_Name: Account
   m_TagString: Untagged
@@ -1636,23 +1636,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 127}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5676011869928404357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6690210960721690785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f9f9cb7110e8244c8fc3664f015f2ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  username: {fileID: 0}
-  password: {fileID: 0}
-  passwordConfirm: {fileID: 0}
-  buttonRegister: {fileID: 0}
-  uiLogin: {fileID: 0}
 --- !u!1 &7875846093148050016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1787,7 +1770,7 @@ MonoBehaviour:
   m_Text: 
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
-  m_ReadOnly: 1
+  m_ReadOnly: 0
 --- !u!1 &8089019181366923641
 GameObject:
   m_ObjectHideFlags: 0

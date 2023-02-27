@@ -14,6 +14,7 @@ namespace GameServer.Services
         public UserService()
         {
             MessageDistributer<NetConnection<NetSession>>.Instance.Subscribe<UserLoginRequest>(this.OnLogin);
+            MessageDistributer<NetConnection<NetSession>>.Instance.Subscribe<UserRegisterRequest>(this.OnRegister);
         }
 
         public void Init()
@@ -27,12 +28,73 @@ namespace GameServer.Services
 
         void OnLogin(NetConnection<NetSession> sender, UserLoginRequest request)
         {
-            Console.WriteLine("UserName = {0}  PassWord  = {1}", request.User, request.Passward);
+            Log.InfoFormat("UserLoginRequest: User:{0}  Pass:{1}", request.User, request.Passward);
 
-            //SkillBridge.Message.NetMessage netMessage = new SkillBridge.Message.NetMessage();
-            //netMessage.Request = new SkillBridge.Message.NetMessageRequest();
-            //netMessage.Request.userLogin = request;
-            //MessageDistributer<NetConnection<NetSession>>.Instance.
+            NetMessage message = new NetMessage();
+            message.Response = new NetMessageResponse();
+            message.Response.userLogin = new UserLoginResponse();
+
+            TUser user = DBService.Instance.Entities.Users.Where(u => u.Username == request.User).FirstOrDefault();
+            if (user == null)
+            {
+                message.Response.userLogin.Result = Result.Failed;
+                message.Response.userLogin.Errormsg = "用户不存在";
+            }
+            else if (user.Password != request.Passward)
+            {
+                message.Response.userLogin.Result = Result.Failed;
+                message.Response.userLogin.Errormsg = "密码错误";
+            }
+            else
+            {
+                sender.Session.User = user;
+
+                message.Response.userLogin.Result = Result.Success;
+                message.Response.userLogin.Errormsg = "None";
+                message.Response.userLogin.Userinfo = new NUserInfo();
+                message.Response.userLogin.Userinfo.Id = 1;
+                message.Response.userLogin.Userinfo.Player = new NPlayerInfo();
+                message.Response.userLogin.Userinfo.Player.Id = user.Player.ID;
+                foreach (var c in user.Player.Characters)
+                {
+                    NCharacterInfo info = new NCharacterInfo();
+                    info.Id = c.ID;
+                    info.Name = c.Name;
+                    info.Class = (CharacterClass)c.Class;
+                    message.Response.userLogin.Userinfo.Player.Characters.Add(info);
+                }
+
+            }
+            byte[] data = PackageHandler.PackMessage(message);
+            sender.SendData(data, 0, data.Length);
+        }
+
+        void OnRegister(NetConnection<NetSession> sender, UserRegisterRequest request)
+        {
+            Log.InfoFormat("UserRegisterRequest: User:{0}  Pass:{1}", request.User, request.Passward);
+
+            NetMessage message = new NetMessage();
+            message.Response = new NetMessageResponse();
+            message.Response.userRegister = new UserRegisterResponse();
+            
+
+            TUser user = DBService.Instance.Entities.Users.Where(u => u.Username == request.User).FirstOrDefault();
+            if (user != null)
+            {
+                message.Response.userRegister.Result = Result.Failed;
+                message.Response.userRegister.Errormsg = "用户已存在.";
+            }
+            else
+            {
+                TPlayer player = DBService.Instance.Entities.Players.Add(new TPlayer());
+                DBService.Instance.Entities.Users.Add(new TUser() { Username = request.User, Password = request.Passward, RegisterDate = DateTime.Now, Player = player });
+                DBService.Instance.Entities.SaveChanges();
+                message.Response.userRegister.Result = Result.Success;
+                message.Response.userRegister.Errormsg = "None";
+            }
+
+            byte[] data = PackageHandler.PackMessage(message);
+            sender.SendData(data, 0, data.Length);
         }
     }
 }

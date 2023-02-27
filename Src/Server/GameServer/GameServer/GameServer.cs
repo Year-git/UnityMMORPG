@@ -24,8 +24,7 @@ namespace GameServer
         {
             network = new NetService();
             network.Init(8000);
-            //DBService.Instance.Init();
-            //var a = DBService.Instance.Entities.Characters.Where(s => s.TID == 1
+            DBService.Instance.Init();
             UserService.Instance.Init();
             thread = new Thread(new ThreadStart(this.Update));
             return true;

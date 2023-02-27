@@ -8,8 +8,8 @@ public class Launch : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
-        Network.NetClient.Instance.Init("127.0.0.1", 8000);
-        Network.NetClient.Instance.Connect();
+        //Network.NetClient.Instance.Init("127.0.0.1", 8000);
+        //Network.NetClient.Instance.Connect();
 
         //SkillBridge.Message.NetMessage netMessage = new SkillBridge.Message.NetMessage();
         //netMessage.Request = new SkillBridge.Message.NetMessageRequest();

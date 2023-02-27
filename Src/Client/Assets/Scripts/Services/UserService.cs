@@ -24,7 +24,7 @@ namespace Services
             NetClient.Instance.OnDisconnect += OnGameServerDisconnect;
             MessageDistributer.Instance.Subscribe<UserLoginResponse>(this.OnUserLogin);
             MessageDistributer.Instance.Subscribe<UserRegisterResponse>(this.OnUserRegister);
-            
+
         }
 
         public void Dispose()
@@ -55,7 +55,7 @@ namespace Services
             if (NetClient.Instance.Connected)
             {
                 this.connected = true;
-                if(this.pendingMessage!=null)
+                if (this.pendingMessage != null)
                 {
                     NetClient.Instance.SendMessage(this.pendingMessage);
                     this.pendingMessage = null;
@@ -76,18 +76,18 @@ namespace Services
             return;
         }
 
-        bool DisconnectNotify(int result,string reason)
+        bool DisconnectNotify(int result, string reason)
         {
             if (this.pendingMessage != null)
             {
-                if (this.pendingMessage.Request.userLogin!=null)
+                if (this.pendingMessage.Request.userLogin != null)
                 {
                     if (this.OnLogin != null)
                     {
                         this.OnLogin(Result.Failed, string.Format("服务器断开！\n RESULT:{0} ERROR:{1}", result, reason));
                     }
                 }
-                else if(this.pendingMessage.Request.userRegister!=null)
+                else if (this.pendingMessage.Request.userRegister != null)
                 {
                     if (this.OnRegister != null)
                     {
@@ -127,11 +127,14 @@ namespace Services
             if (response.Result == Result.Success)
             {//登陆成功逻辑
                 Models.User.Instance.SetupUserInfo(response.Userinfo);
-            };
+            }
+            else
+            {
+                MessageBox.Show(response.Errormsg);
+            }
             if (this.OnLogin != null)
             {
                 this.OnLogin(response.Result, response.Errormsg);
-
             }
         }
 
