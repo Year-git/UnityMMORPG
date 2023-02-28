@@ -52,7 +52,7 @@ namespace GameServer.Services
                 message.Response.userLogin.Result = Result.Success;
                 message.Response.userLogin.Errormsg = "None";
                 message.Response.userLogin.Userinfo = new NUserInfo();
-                message.Response.userLogin.Userinfo.Id = 1;
+                message.Response.userLogin.Userinfo.Id = 1; 
                 message.Response.userLogin.Userinfo.Player = new NPlayerInfo();
                 message.Response.userLogin.Userinfo.Player.Id = user.Player.ID;
                 foreach (var c in user.Player.Characters)
@@ -63,7 +63,6 @@ namespace GameServer.Services
                     info.Class = (CharacterClass)c.Class;
                     message.Response.userLogin.Userinfo.Player.Characters.Add(info);
                 }
-
             }
             byte[] data = PackageHandler.PackMessage(message);
             sender.SendData(data, 0, data.Length);
@@ -77,7 +76,6 @@ namespace GameServer.Services
             message.Response = new NetMessageResponse();
             message.Response.userRegister = new UserRegisterResponse();
             
-
             TUser user = DBService.Instance.Entities.Users.Where(u => u.Username == request.User).FirstOrDefault();
             if (user != null)
             {

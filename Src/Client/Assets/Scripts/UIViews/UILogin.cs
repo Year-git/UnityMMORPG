@@ -19,6 +19,7 @@ public class UILogin : MonoBehaviour
     void Start()
     {
         isLogin = true;
+        UserService.Instance.OnLogin = OnLogin;
         UserService.Instance.OnRegister = OnRegister;
     }
 
@@ -92,13 +93,19 @@ public class UILogin : MonoBehaviour
         this.ClearContent();
     }
 
+    void OnLogin(Result result, string message)
+    {
+        if (result == Result.Success)
+            MessageBox.Show("登录成功", "提示", MessageBoxType.Information).OnYes = this.CloseRegister;
+        else
+            MessageBox.Show(message, "错误", MessageBoxType.Error);
+    }
+
+
     void OnRegister(Result result, string message)
     {
         if (result == Result.Success)
-        {
-            //登录成功，进入角色选择
-            MessageBox.Show("注册成功,请登录", "提示", MessageBoxType.Information).OnYes = this.CloseRegister;
-        }
+            MessageBox.Show("注册成功", "提示", MessageBoxType.Information).OnYes = this.OnBack;
         else
             MessageBox.Show(message, "错误", MessageBoxType.Error);
     }
