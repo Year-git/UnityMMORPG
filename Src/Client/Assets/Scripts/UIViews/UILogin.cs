@@ -114,6 +114,8 @@ public class UILogin : MonoBehaviour
     void CloseRegister()
     {
         ViewManager.Instance.RemoveView("UILogin");
+        ViewManager.Instance.CreateView("UISelectCharacter");
+        SceneManager.Instance.LoadScene("SelectCharacter");
     }
 
     void ClearContent()

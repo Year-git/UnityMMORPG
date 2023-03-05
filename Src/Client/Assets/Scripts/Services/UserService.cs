@@ -4,6 +4,7 @@ using Network;
 using UnityEngine;
 
 using SkillBridge.Message;
+using Models;
 
 namespace Services
 {
@@ -12,6 +13,9 @@ namespace Services
 
         public UnityEngine.Events.UnityAction<Result, string> OnLogin;
         public UnityEngine.Events.UnityAction<Result, string> OnRegister;
+
+        public UnityEngine.Events.UnityAction<Result, string> OnCreateCharacter;
+        public UnityEngine.Events.UnityAction<Result, string> OnSelectCharacter;
         NetMessage pendingMessage = null;
         bool connected = false;
 
@@ -19,17 +23,28 @@ namespace Services
         {
             NetClient.Instance.OnConnect += OnGameServerConnect;
             NetClient.Instance.OnDisconnect += OnGameServerDisconnect;
+
             MessageDistributer.Instance.Subscribe<UserLoginResponse>(this.OnUserLogin);
             MessageDistributer.Instance.Subscribe<UserRegisterResponse>(this.OnUserRegister);
-
+            MessageDistributer.Instance.Subscribe<UserCreateCharacterResponse>(this.OnUserCreateCharacter);
+            MessageDistributer.Instance.Subscribe<UserGameEnterResponse>(this.OnUserGameEnter);
+            MessageDistributer.Instance.Subscribe<UserGameLeaveResponse>(this.OnUserGameLeave);
+            MessageDistributer.Instance.Subscribe<MapCharacterEnterResponse>(this.OnMapCharacterEnter);
+            MessageDistributer.Instance.Subscribe<MapCharacterLeaveResponse>(this.OnMapCharacterLeave);
         }
 
         public void Dispose()
         {
-            MessageDistributer.Instance.Unsubscribe<UserLoginResponse>(this.OnUserLogin);
-            MessageDistributer.Instance.Unsubscribe<UserRegisterResponse>(this.OnUserRegister);
             NetClient.Instance.OnConnect -= OnGameServerConnect;
             NetClient.Instance.OnDisconnect -= OnGameServerDisconnect;
+
+            MessageDistributer.Instance.Unsubscribe<UserLoginResponse>(this.OnUserLogin);
+            MessageDistributer.Instance.Unsubscribe<UserRegisterResponse>(this.OnUserRegister);
+            MessageDistributer.Instance.Unsubscribe<UserCreateCharacterResponse>(this.OnUserCreateCharacter);
+            MessageDistributer.Instance.Unsubscribe<UserGameEnterResponse>(this.OnUserGameEnter);
+            MessageDistributer.Instance.Unsubscribe<UserGameLeaveResponse>(this.OnUserGameLeave);
+            MessageDistributer.Instance.Unsubscribe<MapCharacterEnterResponse>(this.OnMapCharacterEnter);
+            MessageDistributer.Instance.Unsubscribe<MapCharacterLeaveResponse>(this.OnMapCharacterLeave);
         }
 
         public void Init()
@@ -96,15 +111,8 @@ namespace Services
             return false;
         }
 
-        public void SendLogin(string user, string psw)
+        private void SendMessage(NetMessage message)
         {
-            Debug.LogFormat("UserLoginRequest::user :{0} psw:{1}", user, psw);
-            NetMessage message = new NetMessage();
-            message.Request = new NetMessageRequest();
-            message.Request.userLogin = new UserLoginRequest();
-            message.Request.userLogin.User = user;
-            message.Request.userLogin.Passward = psw;
-
             if (this.connected && NetClient.Instance.Connected)
             {
                 this.pendingMessage = null;
@@ -115,6 +123,18 @@ namespace Services
                 this.pendingMessage = message;
                 this.ConnectToServer();
             }
+        }
+
+        public void SendLogin(string user, string psw)
+        {
+            Debug.LogFormat("UserLoginRequest::user :{0} psw:{1}", user, psw);
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.userLogin = new UserLoginRequest();
+            message.Request.userLogin.User = user;
+            message.Request.userLogin.Passward = psw;
+
+            this.SendMessage(message);
         }
 
         void OnUserLogin(object sender, UserLoginResponse response)
@@ -145,16 +165,7 @@ namespace Services
             message.Request.userRegister.User = user;
             message.Request.userRegister.Passward = psw;
 
-            if (this.connected && NetClient.Instance.Connected)
-            {
-                this.pendingMessage = null;
-                NetClient.Instance.SendMessage(message);
-            }
-            else
-            {
-                this.pendingMessage = message;
-                this.ConnectToServer();
-            }
+            this.SendMessage(message);
         }
 
         void OnUserRegister(object sender, UserRegisterResponse response)
@@ -165,6 +176,88 @@ namespace Services
             {
                 this.OnRegister(response.Result, response.Errormsg);
             }
+        }
+
+        public void SendCreateCharacter(string name, CharacterClass characterClass)
+        {
+            Debug.LogFormat("UserCreateCharacterRequest::Name :{0} Class:{1}", name, characterClass.ToString());
+
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.createChar = new UserCreateCharacterRequest();
+
+            message.Request.createChar.Name = name;
+            message.Request.createChar.Class = characterClass;
+
+            this.SendMessage(message);
+        }
+
+        void OnUserCreateCharacter(object sender, UserCreateCharacterResponse response)
+        {
+            Debug.LogFormat("OnUserCreateCharacter:{0} [{1}]", response.Result, response.Errormsg);
+
+            User.Instance.Info.Player.Characters.Clear();
+            for (int i = 0; i < response.Characters.Count; i++)
+            {
+                User.Instance.Info.Player.Characters.Add(response.Characters[i]);
+            }
+            if (this.OnCreateCharacter != null)
+            {
+                this.OnCreateCharacter(response.Result, response.Errormsg);
+            }
+        }
+
+        public void SendUserGameEnter( int characterIdx)
+        {
+            Debug.LogFormat("UserCreateCharacterRequest::characterIdx :{0}", characterIdx);
+
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.gameEnter = new UserGameEnterRequest();
+            message.Request.gameEnter.characterIdx = characterIdx;
+
+            this.SendMessage(message);
+        }
+
+        void OnUserGameEnter(object sender, UserGameEnterResponse response)
+        {
+            Debug.LogFormat("OnUserGameEnter:{0} [{1}]", response.Result, response.Errormsg);
+
+            if (response.Result == Result.Success)
+            {
+            }
+        }
+
+        public void SendUserGameLeaver()
+        {
+            Debug.LogFormat("UserGameLeaveRequest");
+
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.gameLeave = new UserGameLeaveRequest();
+
+            this.SendMessage(message);
+        }
+
+        void OnUserGameLeave(object sender, UserGameLeaveResponse response)
+        {
+            Debug.LogFormat("OnUserGameLeave:{0} [{1}]", response.Result, response.Errormsg);
+        }
+
+
+        void OnMapCharacterEnter(object sender, MapCharacterEnterResponse response)
+        {
+            for (int i = 0; i < response.Characters.Count; i++)
+            {
+                Debug.LogFormat("OnMapCharacterEnter:{0} [{1}]", response.mapId, response.Characters[i].Name);
+            }
+            SceneManager.Instance.LoadScene(DataManager.Instance.Maps[1].Resource);
+            ViewManager.Instance.RemoveView("UISelectCharacter");
+        }
+
+        void OnMapCharacterLeave(object sender, MapCharacterLeaveResponse response)
+        {
+            Debug.LogFormat("OnMapCharacterLeave:{0}", response.characterId);
         }
     }
 }

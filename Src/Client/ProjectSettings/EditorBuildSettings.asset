@@ -6,11 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Levels/Loading.unity
-    guid: 51c0c25c19759994389a397bf3689ee0
-  - enabled: 1
-    path: Assets/Levels/CharSelect.unity
-    guid: b5e80e7e2ea2b7d47b6cfe3e9a4319e7
+    path: Assets/Launch.unity
+    guid: 6397a8fe31390df4cb9130f1adf1f5b8
   - enabled: 1
     path: Assets/AssetsPackage/Levels/MainCity.unity
     guid: 7cfd38121ab8fe245a28b9bc0aa16750
@@ -23,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/AssetsPackage/Levels/Map03.unity
     guid: 1a1da40d2dbb55347b80929645a59343
+  - enabled: 1
+    path: Assets/AssetsPackage/Levels/SelectCharacter.unity
+    guid: 02a456b16c786fe409ecbc2b31124597
   m_configObjects: {}

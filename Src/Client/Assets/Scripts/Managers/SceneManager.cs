@@ -7,13 +7,11 @@ public class SceneManager : MonoSingleton<SceneManager>
 {
     UnityAction<float> onProgress = null;
 
-    // Use this for initialization
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update () {
 		
 	}

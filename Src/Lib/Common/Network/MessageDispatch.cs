@@ -1,5 +1,7 @@
 //WARNING: DON'T EDIT THIS FILE!!!
 using Common;
+using System;
+using System.Reflection;
 
 namespace Network
 {
@@ -19,7 +21,7 @@ namespace Network
 
         public void Dispatch(T sender, SkillBridge.Message.NetMessageRequest message)
         {
-            if (message.userRegister != null) { MessageDistributer<T>.Instance.RaiseEvent(sender,message.userRegister); }
+            if (message.userRegister != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.userRegister); }
             if (message.userLogin != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.userLogin); }
             if (message.createChar != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.createChar); }
             if (message.gameEnter != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.gameEnter); }
@@ -27,6 +29,15 @@ namespace Network
             if (message.mapCharacterEnter != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapCharacterEnter); }
             if (message.mapEntitySync != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapEntitySync); }
             if (message.mapTeleport != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapTeleport); }
+
+            //Type type = typeof(SkillBridge.Message.NetMessageRequest);
+            //PropertyInfo[] properties = type.GetProperties();
+            //foreach (PropertyInfo prop in properties)
+            //{
+            //    var o = prop.GetValue(message, null);
+            //    if (o != null)
+            //        MessageDistributer<T>.Instance.RaiseEvent(sender, o);
+            //}
         }
     }
 }

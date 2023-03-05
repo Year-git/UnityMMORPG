@@ -9,11 +9,15 @@ public class Launch : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
-        StartCoroutine(HotAssetUpdate());
-        InitGameLogic();
+        HotAssetUpdate();
+        StartCoroutine(InitGameLogic());
     }
 
-    IEnumerator HotAssetUpdate()
+    public void HotAssetUpdate()
+    {
+    }
+
+    IEnumerator InitGameLogic()
     {
         ViewManager.Instance.CreateView("UILoading");
 
@@ -28,10 +32,6 @@ public class Launch : MonoBehaviour
         //MapService.Instance.Init();
         UserService.Instance.Init();
         yield return null;
-    }
-
-    public void InitGameLogic()
-    {
 
     }
 }

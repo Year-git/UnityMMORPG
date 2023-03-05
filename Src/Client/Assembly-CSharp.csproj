@@ -74,9 +74,12 @@
     <Compile Include="Assets\Scripts\Resloader.cs" />
     <Compile Include="Assets\Scripts\Services\UserService.cs" />
     <Compile Include="Assets\Scripts\UIViews\MessageBox.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UICharacterItem.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UICharacterView.cs" />
     <Compile Include="Assets\Scripts\UIViews\UILoading.cs" />
     <Compile Include="Assets\Scripts\UIViews\UILogin.cs" />
     <Compile Include="Assets\Scripts\UIViews\UIMessageBox.cs" />
+    <Compile Include="Assets\Scripts\UIViews\UISelectCharacter.cs" />
     <Compile Include="Assets\Scripts\Utilities\GameUtil.cs" />
     <Compile Include="Assets\Scripts\Utilities\Singleton.cs" />
     <Compile Include="Assets\Scripts\Utilities\UnityLogger.cs" />

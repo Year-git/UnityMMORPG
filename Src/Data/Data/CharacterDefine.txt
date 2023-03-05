@@ -31,28 +31,31 @@
   },
   "1001": {
     "TID": 1001,
-    "Name": "恶鬼",
+    "Name": "恶鬼1",
     "Type": "Normal",
     "Class": "WARRIOR",
     "Resource": "Monster/M1001",
+    "Description": "恶鬼1",
     "InitLevel": 1,
     "Speed": 300
   },
   "1002": {
     "TID": 1002,
-    "Name": "-",
+    "Name": "恶鬼2",
     "Type": "Normal",
     "Class": "WIZARD",
     "Resource": "Monster/M1002",
+    "Description": "恶鬼2",
     "InitLevel": 1,
     "Speed": 300
   },
   "1003": {
     "TID": 1003,
-    "Name": "-",
+    "Name": "恶鬼3",
     "Type": "Normal",
     "Class": "ARCHER",
     "Resource": "Monster/M1003",
+    "Description": "恶鬼3",
     "InitLevel": 1,
     "Speed": 300
   }
