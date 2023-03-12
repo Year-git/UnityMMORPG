@@ -21,9 +21,6 @@ namespace GameServer.Managers
                 this.Maps[mapdefine.ID] = map;
             }
         }
-
-
-
         public Map this[int key]
         {
             get
@@ -31,7 +28,6 @@ namespace GameServer.Managers
                 return this.Maps[key];
             }
         }
-
 
         public void Update()
         {

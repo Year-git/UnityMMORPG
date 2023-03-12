@@ -5,6 +5,7 @@ using UnityEngine;
 
 using SkillBridge.Message;
 using Models;
+using Common.Data;
 
 namespace Services
 {
@@ -15,7 +16,7 @@ namespace Services
         public UnityEngine.Events.UnityAction<Result, string> OnRegister;
 
         public UnityEngine.Events.UnityAction<Result, string> OnCreateCharacter;
-        public UnityEngine.Events.UnityAction<Result, string> OnSelectCharacter;
+        //public UnityEngine.Events.UnityAction<Result, string> OnSelectCharacter;
         NetMessage pendingMessage = null;
         bool connected = false;
 
@@ -244,6 +245,8 @@ namespace Services
             Debug.LogFormat("OnUserGameLeave:{0} [{1}]", response.Result, response.Errormsg);
         }
 
+        // ------------------------------------------------------------------------------------------------------------------------------------------
+        //  地图相关通知
 
         void OnMapCharacterEnter(object sender, MapCharacterEnterResponse response)
         {
@@ -251,13 +254,25 @@ namespace Services
             {
                 Debug.LogFormat("OnMapCharacterEnter:{0} [{1}]", response.mapId, response.Characters[i].Name);
             }
-            SceneManager.Instance.LoadScene(DataManager.Instance.Maps[1].Resource);
+            this.EnterMap(User.Instance.CurrentCharacter.mapId);
             ViewManager.Instance.RemoveView("UISelectCharacter");
         }
 
         void OnMapCharacterLeave(object sender, MapCharacterLeaveResponse response)
         {
             Debug.LogFormat("OnMapCharacterLeave:{0}", response.characterId);
+        }
+
+         void EnterMap(int mapId)
+        {
+            if (DataManager.Instance.Maps.ContainsKey(mapId))
+            {
+                MapDefine map = DataManager.Instance.Maps[mapId];
+                User.Instance.CurrentMapData = map;
+                SceneManager.Instance.LoadScene(map.Resource);
+            }
+            else
+                Debug.LogErrorFormat("EnterMap: Map {0} not existed", mapId);
         }
     }
 }

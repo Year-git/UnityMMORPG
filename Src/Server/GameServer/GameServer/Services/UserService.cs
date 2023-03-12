@@ -65,6 +65,7 @@ namespace GameServer.Services
                     info.Id = c.ID;
                     info.Name = c.Name;
                     info.Class = (CharacterClass)c.Class;
+                    info.mapId = c.MapID;
                     message.Response.userLogin.Userinfo.Player.Characters.Add(info);
                 }
             }
@@ -130,6 +131,7 @@ namespace GameServer.Services
                 info.Id = c.ID;
                 info.Name = c.Name;
                 info.Class = (CharacterClass)c.Class;
+                info.mapId = c.MapID;
                 message.Response.createChar.Characters.Add(info);
             }
             byte[] data = PackageHandler.PackMessage(message);
