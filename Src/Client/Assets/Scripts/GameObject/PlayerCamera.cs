@@ -12,6 +12,6 @@ public class PlayerCamera : MonoBehaviour
             return;
 
         this.transform.position = player.transform.position;
-        this.transform.rotation = player.transform.rotation;
+        // this.transform.rotation = player.transform.rotation;
     }
 }

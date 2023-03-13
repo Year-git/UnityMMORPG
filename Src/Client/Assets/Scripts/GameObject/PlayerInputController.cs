@@ -9,14 +9,15 @@ public class PlayerInputController : MonoBehaviour
 {
     public CharacterController myCharacterController;
     public EntityController entityController;
+    public Camera playerCamera;
 
     public float rotateSpeed = 10.0f;
-    public float turnAngle = 10;
-    public int speed;
 
     public Character myCharacter;
     private CharacterState currentState;
 
+    private Vector2 inputMovement = Vector2.zero;
+    private Vector3 playerForword = Vector3.zero;
     void Start()
     {
         currentState = CharacterState.Idle;
@@ -47,33 +48,28 @@ public class PlayerInputController : MonoBehaviour
     {
         if (myCharacter == null) return;
 
-        float v = Input.GetAxis("Vertical");
-        float h = Input.GetAxis("Horizontal");
+        inputMovement.x = Input.GetAxis("Horizontal");
+        inputMovement.y = Input.GetAxis("Vertical");
 
-        if (v != 0 || h != 0)
-        {
-            if (currentState != SkillBridge.Message.CharacterState.Move)
-            {
-                currentState = SkillBridge.Message.CharacterState.Move;
-                this.myCharacter.MoveForward();
-                this.SendEntityEvent(EntityEvent.MoveFwd);
-            }
-            Vector3 dir = new Vector3(h, 0, v).normalized;
-            myCharacterController.Move(dir * this.myCharacter.speed / 100f * Time.fixedDeltaTime);
+        this.PlayerRotate();
+        this.PlayerMove();
+    }
 
+    public void PlayerRotate()
+    {
+        if (inputMovement.Equals(Vector3.zero)) return;
+        playerForword.x = inputMovement.x;
+        playerForword.z = inputMovement.y;
+        Quaternion rotation = Quaternion.LookRotation(playerForword, Vector3.up);
+        rotation = Quaternion.AngleAxis(playerCamera.transform.eulerAngles.y, Vector3.up) * rotation;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
 
-            //Vector3 dir = GameObjectTool.LogicToWorld(myCharacter.direction);
-            //Quaternion rot = new Quaternion();
-            //rot.SetFromToRotation(dir, this.transform.forward);
+        myCharacter.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
+    }
 
-            //if (rot.eulerAngles.y > this.turnAngle && rot.eulerAngles.y < (360 - this.turnAngle))
-            //{
-            //    myCharacter.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
-            //    myCharacterController.transform.forward = this.transform.forward;
-            //    this.SendEntityEvent(EntityEvent.None);
-            //}
-        }
-        else
+    public void PlayerMove()
+    {
+        if (inputMovement.Equals(Vector3.zero))
         {
             if (currentState != SkillBridge.Message.CharacterState.Idle)
             {
@@ -83,62 +79,16 @@ public class PlayerInputController : MonoBehaviour
                 this.SendEntityEvent(EntityEvent.Idle);
             }
         }
-
-        //float v = Input.GetAxis("Vertical");
-        //if (v > 0.01)
-        //{
-        //    if (currentState != SkillBridge.Message.CharacterState.Move)
-        //    {
-        //        currentState = SkillBridge.Message.CharacterState.Move;
-        //        this.myCharacter.MoveForward();
-        //        this.SendEntityEvent(EntityEvent.MoveFwd);
-        //    }
-        //    //this.myRigidbody.velocity = this.myRigidbody.velocity.y * Vector3.up + GameObjectTool.LogicToWorld(myCharacter.direction) * (this.myCharacter.speed + 9.81f) / 100f;
-        //    //myCharacterController.Move(this.myCharacterController.velocity.y * Vector3.up + GameObjectTool.LogicToWorld(myCharacter.direction) * (this.myCharacter.speed + 9.81f) / 100f);
-        //    myCharacterController.Move(this.transform.forward * Time.fixedTime);
-        //}
-        //else if (v < -0.01)
-        //{
-        //    if (currentState != SkillBridge.Message.CharacterState.Move)
-        //    {
-        //        currentState = SkillBridge.Message.CharacterState.Move;
-        //        this.myCharacter.MoveBack();
-        //        this.SendEntityEvent(EntityEvent.MoveBack);
-        //    }
-        //    //this.myRigidbody.velocity = this.myRigidbody.velocity.y * Vector3.up + GameObjectTool.LogicToWorld(myCharacter.direction) * (this.myCharacter.speed + 9.81f) / 100f;
-        //    //myCharacterController.Move(this.myCharacterController.velocity.y * Vector3.up + GameObjectTool.LogicToWorld(myCharacter.direction) * (this.myCharacter.speed + 9.81f) / 100f);
-        //}
-        //else
-        //{
-        //    if (currentState != SkillBridge.Message.CharacterState.Idle)
-        //    {
-        //        currentState = SkillBridge.Message.CharacterState.Idle;
-        //        myCharacterController.Move(Vector3.zero);
-        //        this.myCharacter.Stop();
-        //        this.SendEntityEvent(EntityEvent.Idle);
-        //    }
-        //}
-
-        //if (Input.GetButtonDown("Jump"))
-        //{
-        //    this.SendEntityEvent(EntityEvent.Jump);
-        //}
-
-        //float h = Input.GetAxis("Horizontal");
-        //if (h < -0.1 || h > 0.1)
-        //{
-        //    this.transform.Rotate(0, h * rotateSpeed, 0);
-        //    Vector3 dir = GameObjectTool.LogicToWorld(myCharacter.direction);
-        //    Quaternion rot = new Quaternion();
-        //    rot.SetFromToRotation(dir, this.transform.forward);
-
-        //    if (rot.eulerAngles.y > this.turnAngle && rot.eulerAngles.y < (360 - this.turnAngle))
-        //    {
-        //        myCharacter.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
-        //        myCharacterController.transform.forward = this.transform.forward;
-        //        this.SendEntityEvent(EntityEvent.None);
-        //    }
-        //}
+        else
+        {
+            if (currentState != SkillBridge.Message.CharacterState.Move)
+            {
+                currentState = SkillBridge.Message.CharacterState.Move;
+                this.myCharacter.MoveForward();
+                this.SendEntityEvent(EntityEvent.MoveFwd);
+            }
+        }
+        myCharacterController.SimpleMove(playerForword * this.myCharacter.speed / 100f);
     }
 
     public void SendEntityEvent(EntityEvent entityEvent)

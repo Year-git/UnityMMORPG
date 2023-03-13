@@ -10481,15 +10481,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1213857306}
     m_Modifications:
+    - target: {fileID: 100004, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
-    - target: {fileID: 100004, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
@@ -13593,46 +13593,6 @@ PrefabInstance:
 --- !u!1 &426207304 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
-    type: 3}
-  m_PrefabInstance: {fileID: 809944554135304836}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &426207306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 426207304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee54299a3a3a8242b758b19cd812f74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myCharacterController: {fileID: 426207308}
-  entityController: {fileID: 426207307}
-  rotateSpeed: 2
-  turnAngle: 10
-  speed: 1
---- !u!114 &426207307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 426207304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bf7cdafe19d7194e9a57adc242fa108, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  myCharacterController: {fileID: 426207308}
-  myAnimator: {fileID: 823503466}
-  isPlayer: 1
-  position: {x: 0, y: 0, z: 0}
-  direction: {x: 0, y: 0, z: 0}
---- !u!143 &426207308 stripped
-CharacterController:
-  m_CorrespondingSourceObject: {fileID: 809944554076957947, guid: d679ff93a1d4f28438d4575a13690865,
     type: 3}
   m_PrefabInstance: {fileID: 809944554135304836}
   m_PrefabAsset: {fileID: 0}
@@ -24791,12 +24751,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 89f7c031377cc764cb9a6491643b481e,
     type: 3}
   m_PrefabInstance: {fileID: 352573524}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &823503466 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4225551294160408607, guid: d679ff93a1d4f28438d4575a13690865,
-    type: 3}
-  m_PrefabInstance: {fileID: 809944554135304836}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &824352949
 GameObject:
@@ -59356,6 +59310,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b271c24a48ae7a74a95dc221d0531459, type: 3}
+--- !u!20 &2036311312 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20652036606558768, guid: d5391e1f63d0bde4b87e6c38a4bf145c,
+    type: 3}
+  m_PrefabInstance: {fileID: 886849915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2039758069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61862,10 +61822,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 809944554076957946, guid: d679ff93a1d4f28438d4575a13690865,
+    - target: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
         type: 3}
-      propertyPath: m_UseGravity
-      value: 1
+      propertyPath: m_Name
+      value: Warrior
       objectReference: {fileID: 0}
     - target: {fileID: 3574077738793903588, guid: d679ff93a1d4f28438d4575a13690865,
         type: 3}
@@ -61922,11 +61882,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
-        type: 3}
-      propertyPath: m_Name
-      value: Warrior
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 809944554076957946, guid: d679ff93a1d4f28438d4575a13690865, type: 3}
+    - target: {fileID: 426207306, guid: d679ff93a1d4f28438d4575a13690865, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 2036311312}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d679ff93a1d4f28438d4575a13690865, type: 3}

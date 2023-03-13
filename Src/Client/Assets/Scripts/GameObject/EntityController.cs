@@ -62,7 +62,7 @@ public class EntityController : MonoBehaviour
         {
             case EntityEvent.Idle:
                 myAnimator.SetFloat("Speed", 0);
-                myAnimator.SetTrigger("Idle");
+                // myAnimator.SetTrigger("Idle");
                 break;
             case EntityEvent.MoveFwd:
                 myAnimator.SetFloat("Speed", entity.speed);
