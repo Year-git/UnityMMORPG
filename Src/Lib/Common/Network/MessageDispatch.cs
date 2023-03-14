@@ -31,13 +31,32 @@ namespace Network
             if (message.mapTeleport != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapTeleport); }
 
             //Type type = typeof(SkillBridge.Message.NetMessageRequest);
-            //PropertyInfo[] properties = type.GetProperties();
-            //foreach (PropertyInfo prop in properties)
+            ////PropertyInfo[] properties = type.GetProperties();
+            //FieldInfo[] fields = type.GetFields();
+            //foreach (FieldInfo field in fields)
             //{
-            //    var o = prop.GetValue(message, null);
-            //    if (o != null)
-            //        MessageDistributer<T>.Instance.RaiseEvent(sender, o);
+            //    var obj = field.GetValue(message);
+            //    if (obj != null)
+            //    {
+            //        bool b = object.ReferenceEquals(obj, message.userLogin);
+            //        if (b)
+            //        {
+            //            MessageDistributer<T>.Instance.RaiseEvent(sender, obj);
+            //        }
+            //    }
             //}
+            ////foreach (PropertyInfo prop in properties)
+            ////{
+            ////    var obj = prop.GetValue(message, null);
+            ////    if (obj != null)
+            ////    {
+            ////        bool b = object.ReferenceEquals(obj, message.userLogin);
+            ////        if (b)
+            ////        {
+            ////            MessageDistributer<T>.Instance.RaiseEvent(sender, obj);
+            ////        }
+            ////    }
+            ////}
         }
     }
 }
