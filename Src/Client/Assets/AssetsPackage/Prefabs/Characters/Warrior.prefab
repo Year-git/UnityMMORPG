@@ -598,7 +598,6 @@ MonoBehaviour:
   entityController: {fileID: 426207307}
   playerCamera: {fileID: 0}
   rotateSpeed: 1000
-  turnAngle: 10
 --- !u!114 &426207307
 MonoBehaviour:
   m_ObjectHideFlags: 0

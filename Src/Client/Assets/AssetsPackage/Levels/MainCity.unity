@@ -10481,15 +10481,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1213857306}
     m_Modifications:
-    - target: {fileID: 100004, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 9de19e1a9ba266e4a8c2d7734f490b57, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
@@ -13590,12 +13590,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b271c24a48ae7a74a95dc221d0531459, type: 3}
---- !u!1 &426207304 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
-    type: 3}
-  m_PrefabInstance: {fileID: 809944554135304836}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &428446922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26802,7 +26796,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4341760909876430, guid: d5391e1f63d0bde4b87e6c38a4bf145c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4341760909876430, guid: d5391e1f63d0bde4b87e6c38a4bf145c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26827,6 +26821,10 @@ PrefabInstance:
     - target: {fileID: 4341760909876430, guid: d5391e1f63d0bde4b87e6c38a4bf145c, type: 3}
       propertyPath: m_RootOrder
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4803807019765412, guid: d5391e1f63d0bde4b87e6c38a4bf145c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114406636976840150, guid: d5391e1f63d0bde4b87e6c38a4bf145c, type: 3}
@@ -38903,6 +38901,12 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1304148857 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 809944553160249124, guid: d679ff93a1d4f28438d4575a13690865,
+    type: 3}
+  m_PrefabInstance: {fileID: 809944554135304836}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1305244814
 GameObject:
   m_ObjectHideFlags: 0
@@ -39436,7 +39440,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cbc617ae58a3e543a3f10623dc8b11b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 426207304}
+  player: {fileID: 1304148857}
+  rotateSpeed: 70
+  rotateMinY: -50
+  rotateMaxY: 30
 --- !u!1001 &1336942058
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61822,11 +61829,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
-        type: 3}
-      propertyPath: m_Name
-      value: Warrior
-      objectReference: {fileID: 0}
+    - target: {fileID: 426207306, guid: d679ff93a1d4f28438d4575a13690865, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 2036311312}
     - target: {fileID: 3574077738793903588, guid: d679ff93a1d4f28438d4575a13690865,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -61882,9 +61888,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 426207306, guid: d679ff93a1d4f28438d4575a13690865, type: 3}
-      propertyPath: playerCamera
-      value: 
-      objectReference: {fileID: 2036311312}
+    - target: {fileID: 3574077738794269124, guid: d679ff93a1d4f28438d4575a13690865,
+        type: 3}
+      propertyPath: m_Name
+      value: Warrior
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d679ff93a1d4f28438d4575a13690865, type: 3}
