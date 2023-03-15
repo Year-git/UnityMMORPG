@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputController : MonoBehaviour
+public class PlayerInputController : MonoSingleton<PlayerInputController>
 {
     public CharacterController myCharacterController;
     public EntityController entityController;
@@ -88,7 +88,8 @@ public class PlayerInputController : MonoBehaviour
                 this.SendEntityEvent(EntityEvent.MoveFwd);
             }
         }
-        myCharacterController.SimpleMove(playerForword * this.myCharacter.speed / 100f);
+        float y = playerCamera.transform.rotation.eulerAngles.y;
+        myCharacterController.SimpleMove(Quaternion.Euler(0, y, 0) * playerForword * this.myCharacter.speed / 100f);
     }
 
     public void SendEntityEvent(EntityEvent entityEvent)

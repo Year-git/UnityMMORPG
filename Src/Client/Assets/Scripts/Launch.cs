@@ -28,9 +28,8 @@ public class Launch : MonoBehaviour
 
         yield return DataManager.Instance.LoadData();
 
-        //Init basic services
-        //MapService.Instance.Init();
         UserService.Instance.Init();
+        MapService.Instance.Init();
         yield return null;
 
     }
