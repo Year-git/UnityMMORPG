@@ -52,7 +52,7 @@ namespace GameServer.Models
         /// <param name="character"></param>
         internal void CharacterEnter(NetConnection<NetSession> conn, Character character)
         {
-            Log.InfoFormat("CharacterEnter: Map:{0} characterId:{1}", this.Define.ID, character.Id);
+            Log.InfoFormat("CharacterEnter: Map:{0} characterId:{1}", this.ID, character.Id);
 
             character.Info.mapId = this.ID;
 
@@ -60,17 +60,18 @@ namespace GameServer.Models
             message.Response = new NetMessageResponse();
 
             message.Response.mapCharacterEnter = new MapCharacterEnterResponse();
-            message.Response.mapCharacterEnter.mapId = this.Define.ID;
+            message.Response.mapCharacterEnter.mapId = this.ID;
             message.Response.mapCharacterEnter.Characters.Add(character.Info);
 
+            // 先广播在地图中的玩家
             foreach (var kv in this.MapCharacters)
             {
                 message.Response.mapCharacterEnter.Characters.Add(kv.Value.character.Info);
                 this.SendCharacterEnterMap(kv.Value.connection, character.Info);
             }
-            
-            this.MapCharacters[character.Id] = new MapCharacter(conn, character);
 
+            // 后添加自己到玩家列表，通知自己进入地图
+            this.MapCharacters[character.Id] = new MapCharacter(conn, character);
             byte[] data = PackageHandler.PackMessage(message);
             conn.SendData(data, 0, data.Length);
         }

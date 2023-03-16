@@ -7,15 +7,6 @@ public class SceneManager : MonoSingleton<SceneManager>
 {
     UnityAction<float> onProgress = null;
 
-    void Start()
-    {
-        
-    }
-
-    void Update () {
-		
-	}
-
     public void LoadScene(string name)
     {
         StartCoroutine(LoadLevel(name));

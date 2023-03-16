@@ -24,8 +24,9 @@ public abstract class Singleton<T> where T : new()
     }
 }
 
-public abstract class MonoSingleton<T> : MonoBehaviour where T : Component
+public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
+    public bool global = true;
     static T instance;
     public static T Instance
     {
@@ -46,22 +47,14 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : Component
 
     }
 
-    void Awake()
+    void Start()
     {
-        DontDestroyOnLoad(gameObject);
-        if (instance == null)
-        {
-            instance = this as T;
-        }
-        else
-        {
-            GameObject.Destroy(gameObject);
-        }
-        OnAwake();
+        if (global) DontDestroyOnLoad(this.gameObject);
+        this.OnStart();
     }
 
-    protected virtual void OnAwake()
+    protected virtual void OnStart()
     {
 
     }
-    }
+}

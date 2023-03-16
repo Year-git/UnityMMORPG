@@ -16,7 +16,7 @@ namespace Network
             if (message.gameLeave != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.gameLeave); }
             if (message.mapCharacterEnter != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapCharacterEnter); }
             if (message.mapCharacterLeave != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapCharacterLeave); }
-            if (message.mapEntitySync != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapEntitySync); }   
+            if (message.mapEntitySync != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapEntitySync); }
         }
 
         public void Dispatch(T sender, SkillBridge.Message.NetMessageRequest message)
@@ -31,32 +31,13 @@ namespace Network
             if (message.mapTeleport != null) { MessageDistributer<T>.Instance.RaiseEvent(sender, message.mapTeleport); }
 
             //Type type = typeof(SkillBridge.Message.NetMessageRequest);
-            ////PropertyInfo[] properties = type.GetProperties();
-            //FieldInfo[] fields = type.GetFields();
-            //foreach (FieldInfo field in fields)
+            //PropertyInfo[] properties = type.GetProperties();
+            //foreach (PropertyInfo prop in properties)
             //{
-            //    var obj = field.GetValue(message);
+            //    var obj = prop.GetValue(message, null);
             //    if (obj != null)
-            //    {
-            //        bool b = object.ReferenceEquals(obj, message.userLogin);
-            //        if (b)
-            //        {
-            //            MessageDistributer<T>.Instance.RaiseEvent(sender, obj);
-            //        }
-            //    }
+            //        MessageDistributer<T>.Instance.RaiseEvent(sender, obj);
             //}
-            ////foreach (PropertyInfo prop in properties)
-            ////{
-            ////    var obj = prop.GetValue(message, null);
-            ////    if (obj != null)
-            ////    {
-            ////        bool b = object.ReferenceEquals(obj, message.userLogin);
-            ////        if (b)
-            ////        {
-            ////            MessageDistributer<T>.Instance.RaiseEvent(sender, obj);
-            ////        }
-            ////    }
-            ////}
         }
     }
 }

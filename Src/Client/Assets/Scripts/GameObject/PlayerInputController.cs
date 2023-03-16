@@ -9,11 +9,10 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
 {
     public CharacterController myCharacterController;
     public EntityController entityController;
-    public Camera playerCamera;
 
     public float rotateSpeed = 10.0f;
 
-    public Character myCharacter;
+    public Character character;
     private CharacterState currentState;
 
     private Vector2 inputMovement = Vector2.zero;
@@ -22,31 +21,31 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
     {
         currentState = CharacterState.Idle;
 
-        // 测试
-        if (this.myCharacter == null)
-        {
-            DataManager.Instance.Load();
-            NCharacterInfo cinfo = new NCharacterInfo();
-            cinfo.Id = 1;
-            cinfo.Name = "Test";
-            cinfo.Tid = 1;
-            cinfo.Entity = new NEntity();
-            cinfo.Entity.Position = new NVector3();
-            cinfo.Entity.Position.X = 4100;
-            cinfo.Entity.Position.Y = 3000;
-            cinfo.Entity.Position.Z = 800;
-            cinfo.Entity.Direction = new NVector3();
-            cinfo.Entity.Direction.X = 0;
-            cinfo.Entity.Direction.Y = 100;
-            cinfo.Entity.Direction.Z = 0;
-            this.myCharacter = new Character(cinfo);
-            if (entityController != null) entityController.entity = this.myCharacter;
-        }
+        //// 测试
+        //if (this.character == null)
+        //{
+        //    DataManager.Instance.Load();
+        //    NCharacterInfo cinfo = new NCharacterInfo();
+        //    cinfo.Id = 1;
+        //    cinfo.Name = "Test";
+        //    cinfo.Tid = 1;
+        //    cinfo.Entity = new NEntity();
+        //    cinfo.Entity.Position = new NVector3();
+        //    cinfo.Entity.Position.X = 4100;
+        //    cinfo.Entity.Position.Y = 3000;
+        //    cinfo.Entity.Position.Z = 800;
+        //    cinfo.Entity.Direction = new NVector3();
+        //    cinfo.Entity.Direction.X = 0;
+        //    cinfo.Entity.Direction.Y = 100;
+        //    cinfo.Entity.Direction.Z = 0;
+        //    this.character = new Character(cinfo);
+        //    if (entityController != null) entityController.entity = this.character;
+        //}
     }
 
     void FixedUpdate()
     {
-        if (myCharacter == null) return;
+        if (character == null) return;
 
         inputMovement.x = Input.GetAxis("Horizontal");
         inputMovement.y = Input.GetAxis("Vertical");
@@ -61,10 +60,10 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
         playerForword.x = inputMovement.x;
         playerForword.z = inputMovement.y;
         Quaternion rotation = Quaternion.LookRotation(playerForword, Vector3.up);
-        rotation = Quaternion.AngleAxis(playerCamera.transform.eulerAngles.y, Vector3.up) * rotation;
+        rotation = Quaternion.AngleAxis(MainPlayerCamera.Instance.camera.transform.eulerAngles.y, Vector3.up) * rotation;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
 
-        myCharacter.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
+        character.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
     }
 
     public void PlayerMove()
@@ -75,7 +74,7 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
             {
                 currentState = SkillBridge.Message.CharacterState.Idle;
                 myCharacterController.Move(Vector3.zero);
-                this.myCharacter.Stop();
+                this.character.Stop();
                 this.SendEntityEvent(EntityEvent.Idle);
             }
         }
@@ -84,12 +83,12 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
             if (currentState != SkillBridge.Message.CharacterState.Move)
             {
                 currentState = SkillBridge.Message.CharacterState.Move;
-                this.myCharacter.MoveForward();
+                this.character.MoveForward();
                 this.SendEntityEvent(EntityEvent.MoveFwd);
             }
         }
-        float y = playerCamera.transform.rotation.eulerAngles.y;
-        myCharacterController.SimpleMove(Quaternion.Euler(0, y, 0) * playerForword * this.myCharacter.speed / 100f);
+        float y = MainPlayerCamera.Instance.camera.transform.rotation.eulerAngles.y;
+        myCharacterController.SimpleMove(Quaternion.Euler(0, y, 0) * playerForword * this.character.speed / 100f);
     }
 
     public void SendEntityEvent(EntityEvent entityEvent)

@@ -30,6 +30,7 @@ public class Launch : MonoBehaviour
 
         UserService.Instance.Init();
         MapService.Instance.Init();
+        CharacterManager.Instance.Init();
         yield return null;
 
     }

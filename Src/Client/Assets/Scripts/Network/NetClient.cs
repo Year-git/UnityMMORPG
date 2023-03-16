@@ -60,7 +60,7 @@ namespace Network
 
         public PackageHandler packageHandler = new PackageHandler(null);
 
-        protected override void OnAwake()
+        void Awake()
         {
             running = true;
         }

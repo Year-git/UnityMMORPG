@@ -7,7 +7,7 @@ public class ViewManager : MonoSingleton<ViewManager>
 {
     private Transform root;
     private Dictionary<string, GameObject> viewDictionary = new Dictionary<string, GameObject>();
-    protected override void OnAwake()
+    void Awake()
     {
         root = GameObject.Find("Canvas").transform;
         DontDestroyOnLoad(root);

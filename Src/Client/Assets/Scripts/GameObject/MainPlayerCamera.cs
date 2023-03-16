@@ -4,9 +4,11 @@ using UnityEngine;
 using SkillBridge.Message;
 using Entities;
 
-public class PlayerCamera : MonoSingleton<PlayerCamera>
+public class MainPlayerCamera : MonoSingleton<MainPlayerCamera>
 {
     public GameObject player;
+    public GameObject cameraPos;
+    public Camera camera;
     public float rotateSpeed = 70.0f;
     public float rotateMinY = -50f;
     public float rotateMaxY = 30f;
@@ -19,7 +21,13 @@ public class PlayerCamera : MonoSingleton<PlayerCamera>
         if (player == null)
             return;
 
-        this.transform.position = player.transform.position;
+        if (cameraPos == null)
+        {
+            Transform pos = player.transform.Find("CameraPos");
+            cameraPos = pos == null ? player : pos.gameObject;
+        }
+
+        this.transform.position = cameraPos.transform.position;
 
         float mouseX = Input.GetAxis("Mouse X");
         float mouseY = Input.GetAxis("Mouse Y");
