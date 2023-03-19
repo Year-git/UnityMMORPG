@@ -13,6 +13,9 @@ namespace GameServer.Services
 {
     class UserService : Singleton<UserService>
     {
+
+        Dictionary<long, TUser> Users = new Dictionary<long, TUser>();
+
         public UserService()
         {
             MessageDistributer<NetConnection<NetSession>>.Instance.Subscribe<UserLoginRequest>(this.OnLogin);
@@ -49,6 +52,11 @@ namespace GameServer.Services
                 message.Response.userLogin.Result = Result.Failed;
                 message.Response.userLogin.Errormsg = "密码错误";
             }
+            else if (Users.ContainsKey(user.ID))
+            {
+                message.Response.userLogin.Result = Result.Failed;
+                message.Response.userLogin.Errormsg = "用户已经登入";
+            }
             else
             {
                 sender.Session.User = user;
@@ -68,6 +76,8 @@ namespace GameServer.Services
                     info.mapId = c.MapID;
                     message.Response.userLogin.Userinfo.Player.Characters.Add(info);
                 }
+
+                Users[user.ID] = user;
             }
             byte[] data = PackageHandler.PackMessage(message);
             sender.SendData(data, 0, data.Length);
@@ -100,6 +110,17 @@ namespace GameServer.Services
             sender.SendData(data, 0, data.Length);
         }
 
+        public void OnLeave(NetConnection<NetSession> sender)
+        {
+            if (sender.Session.Character != null)
+            {
+                MapManager.Instance[sender.Session.Character.Data.MapID].CharacterLeave(sender, sender.Session.Character);
+                CharacterManager.Instance.RemoveCharacter(sender.Session.Character.Info.Id);
+            }
+
+            Users.Remove(sender.Session.User.ID);
+        }
+
         void OnCreateCharacter(NetConnection<NetSession> sender, UserCreateCharacterRequest request)
         {
             Log.InfoFormat("UserCreateCharacterRequest: Name:{0}  Class:{1}", request.Name, request.Class.ToString());
@@ -114,9 +135,9 @@ namespace GameServer.Services
                 Class = (int)request.Class,
                 TID = (int)request.Class,
                 MapID = 1,
-                MapPosX = 0,
-                MapPosY = 0,
-                MapPosZ = 0,
+                MapPosX = 4200,
+                MapPosY = 3000,
+                MapPosZ = 820,
             };
 
             DBService.Instance.Entities.Characters.Add(character);
@@ -164,7 +185,17 @@ namespace GameServer.Services
         void OnGameLeave(NetConnection<NetSession> sender, UserGameLeaveRequest request)
         {
             Log.InfoFormat("UserGameLeaveRequest");
+            MapManager.Instance[sender.Session.Character.Data.MapID].CharacterLeave(sender, sender.Session.Character);
+            CharacterManager.Instance.RemoveCharacter(sender.Session.Character.Info.Id);
 
+            NetMessage message = new NetMessage();
+            message.Response = new NetMessageResponse();
+            message.Response.gameLeave = new UserGameLeaveResponse();
+            message.Response.gameLeave.Result = Result.Success;
+            message.Response.gameLeave.Errormsg = "None";
+
+            byte[] data = PackageHandler.PackMessage(message);
+            sender.SendData(data, 0, data.Length);
         }
     }
 }

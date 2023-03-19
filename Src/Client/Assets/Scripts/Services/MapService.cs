@@ -16,21 +16,25 @@ namespace Services
         {
             MessageDistributer.Instance.Subscribe<MapCharacterEnterResponse>(this.OnMapCharacterEnter);
             MessageDistributer.Instance.Subscribe<MapCharacterLeaveResponse>(this.OnMapCharacterLeave);
+            MessageDistributer.Instance.Subscribe<MapEntitySyncResponse>(this.OnMapEntitySyncResponse);
+
+            
         }
 
         public void Dispose()
         {
             MessageDistributer.Instance.Unsubscribe<MapCharacterEnterResponse>(this.OnMapCharacterEnter);
             MessageDistributer.Instance.Unsubscribe<MapCharacterLeaveResponse>(this.OnMapCharacterLeave);
+            MessageDistributer.Instance.Unsubscribe<MapEntitySyncResponse>(this.OnMapEntitySyncResponse);
         }
-
         public void Init()
         {
-
+            Debug.LogFormat("MapService:Init");
         }
 
         void OnMapCharacterEnter(object sender, MapCharacterEnterResponse response)
         {
+            Debug.LogFormat("OnMapCharacterEnter:{0}", response.mapId);
             foreach (var characterInfo in response.Characters)
             {
                 Debug.LogFormat("OnMapCharacterEnter:{0} [{1}]", response.mapId, characterInfo.Name);
@@ -55,15 +59,43 @@ namespace Services
             {
                 this.LeaveMap();
             }
+            else
+            {
+                CharacterManager.Instance.RemoveCharacter(response.characterId);
+            }
         }
 
-         void EnterMap(int mapId)
+        public void SendMapEntitySyncRequest(EntityEvent entityEvent, NEntity entity)
+        {
+            Debug.LogFormat("MapEntitySyncRequest:  entityEvent:{0}  NEntity:{1}", entityEvent.ToString(), entity.Id);
+
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.mapEntitySync = new MapEntitySyncRequest();
+            message.Request.mapEntitySync.entitySync = new NEntitySync();
+            message.Request.mapEntitySync.entitySync.Id = entity.Id;
+            message.Request.mapEntitySync.entitySync.Event = entityEvent;
+            message.Request.mapEntitySync.entitySync.Entity = entity;
+            UserService.Instance.SendMessage(message);
+        }
+
+        void OnMapEntitySyncResponse(object sender, MapEntitySyncResponse message)
+        {
+            Debug.LogFormat("OnMapEntitySyncResponse:{0}", message.entitySyncs);
+            foreach (var entity in message.entitySyncs)
+            {
+                EntityManager.Instance.OnEntitySync(entity);
+            }
+        }
+
+        void EnterMap(int mapId)
         {
             if (DataManager.Instance.Maps.ContainsKey(mapId))
             {
                 MapDefine map = DataManager.Instance.Maps[mapId];
                 User.Instance.CurrentMapData = map;
                 SceneManager.Instance.LoadScene(map.Resource);
+                ViewManager.Instance.CreateView("UIMain");
             }
             else
                 Debug.LogErrorFormat("EnterMap: Map {0} not existed", mapId);
@@ -73,6 +105,10 @@ namespace Services
         {
             currentMapId = 0;
             User.Instance.CurrentCharacter = null;
+            CharacterManager.Instance.RemoveCharacter(User.Instance.CurrentCharacter.Id);
+            ViewManager.Instance.RemoveView("UIMain");
+            ViewManager.Instance.CreateView("UISelectCharacter");
+            SceneManager.Instance.LoadScene("SelectCharacter");
         }
     }
 }

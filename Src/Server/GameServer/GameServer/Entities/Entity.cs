@@ -10,18 +10,19 @@ namespace GameServer.Entities
 {
     class Entity
     {
+        public static int IncrementId = 0;
         public int entityId
         {
             get { return this.entityData.Id; }
         }
-
 
         private Vector3Int position;
 
         public Vector3Int Position
         {
             get { return position; }
-            set {
+            set
+            {
                 position = value;
                 this.entityData.Position = position;
             }
@@ -63,11 +64,13 @@ namespace GameServer.Entities
             }
         }
 
-        public Entity(Vector3Int pos,Vector3Int dir)
+        public Entity(Vector3Int pos, Vector3Int dir)
         {
             this.entityData = new NEntity();
+            this.entityData.Id = ++IncrementId;
             this.entityData.Position = pos;
             this.entityData.Direction = dir;
+
             this.SetEntityData(this.entityData);
         }
 

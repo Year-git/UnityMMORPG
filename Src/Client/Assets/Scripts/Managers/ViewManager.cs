@@ -5,18 +5,7 @@ using UnityEngine.Events;
 
 public class ViewManager : MonoSingleton<ViewManager>
 {
-    private Transform root;
     private Dictionary<string, GameObject> viewDictionary = new Dictionary<string, GameObject>();
-    void Awake()
-    {
-        root = GameObject.Find("Canvas").transform;
-        DontDestroyOnLoad(root);
-    }
-
-    void Update()
-    {
-
-    }
 
     public void CreateView(string viewName)
     {
@@ -24,15 +13,18 @@ public class ViewManager : MonoSingleton<ViewManager>
         {
             return;
         }
-        string path = "Assets/AssetsPackage/UI/UIPrefab/" + viewName + ".prefab";
-        GameObject view = Resloader.LoadAsset<GameObject>(path);
-        view.name = viewName;
-        RectTransform rectTransform = view.GetComponent<RectTransform>();
-        rectTransform.SetParent(root);
+        Object obj = Resloader.LoadResources<Object>("UI/" + viewName);
+        Debug.LogFormat("CreateView:{0}", viewName);
+        GameObject go = Instantiate(obj) as GameObject;
+        RectTransform rectTransform = go.GetComponent<RectTransform>();
+        rectTransform.SetParent(transform);
         rectTransform.offsetMax = Vector2.zero;
         rectTransform.offsetMin = Vector2.zero;
+        go.name = viewName;
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localScale = Vector3.one;
 
-        viewDictionary.Add(viewName, view);
+        viewDictionary.Add(viewName, go);
     }
 
     public void RemoveView(string viewName)

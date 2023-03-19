@@ -107,7 +107,7 @@ namespace Services
             return false;
         }
 
-        private void SendMessage(NetMessage message)
+        public void SendMessage(NetMessage message)
         {
             if (this.connected && NetClient.Instance.Connected)
             {

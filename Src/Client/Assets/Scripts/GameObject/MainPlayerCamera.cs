@@ -8,7 +8,7 @@ public class MainPlayerCamera : MonoSingleton<MainPlayerCamera>
 {
     public GameObject player;
     public GameObject cameraPos;
-    public Camera camera;
+    public Camera playerCamera;
     public float rotateSpeed = 70.0f;
     public float rotateMinY = -50f;
     public float rotateMaxY = 30f;

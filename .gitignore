@@ -57,3 +57,5 @@ ipch/
 *.vspx
 
 Client2021
+/Src/Client/Log
+/Src/Client/Build

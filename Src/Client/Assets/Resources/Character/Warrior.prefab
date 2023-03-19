@@ -556,7 +556,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3574077738794269124}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.871, y: 8, z: 30.689}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4225551294150573991}
@@ -594,9 +594,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fee54299a3a3a8242b758b19cd812f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myCharacterController: {fileID: 809944554076957947}
+  myCharacterController: {fileID: 0}
   entityController: {fileID: 426207307}
-  playerCamera: {fileID: 0}
   rotateSpeed: 1000
 --- !u!114 &426207307
 MonoBehaviour:

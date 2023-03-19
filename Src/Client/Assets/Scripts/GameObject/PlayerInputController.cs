@@ -1,11 +1,12 @@
 ﻿using Entities;
 using Models;
+using Services;
 using SkillBridge.Message;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputController : MonoSingleton<PlayerInputController>
+public class PlayerInputController : MonoBehaviour
 {
     public CharacterController myCharacterController;
     public EntityController entityController;
@@ -14,13 +15,17 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
 
     public Character character;
     private CharacterState currentState;
+    private EntityEvent currentEventState;
 
     private Vector2 inputMovement = Vector2.zero;
     private Vector3 playerForword = Vector3.zero;
+
+    private Vector3 lastPos = Vector3.zero;
+    private Vector3 lastDir = Vector3.zero;
+
     void Start()
     {
         currentState = CharacterState.Idle;
-
         //// 测试
         //if (this.character == null)
         //{
@@ -45,10 +50,14 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
 
     void FixedUpdate()
     {
-        if (character == null) return;
+        if (character == null || myCharacterController == null)
+            return;
 
         inputMovement.x = Input.GetAxis("Horizontal");
         inputMovement.y = Input.GetAxis("Vertical");
+
+        playerForword.x = inputMovement.x;
+        playerForword.z = inputMovement.y;
 
         this.PlayerRotate();
         this.PlayerMove();
@@ -56,11 +65,11 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
 
     public void PlayerRotate()
     {
-        if (inputMovement.Equals(Vector3.zero)) return;
-        playerForword.x = inputMovement.x;
-        playerForword.z = inputMovement.y;
+        if (inputMovement.Equals(Vector3.zero))
+            return;
+
         Quaternion rotation = Quaternion.LookRotation(playerForword, Vector3.up);
-        rotation = Quaternion.AngleAxis(MainPlayerCamera.Instance.camera.transform.eulerAngles.y, Vector3.up) * rotation;
+        rotation = Quaternion.AngleAxis(MainPlayerCamera.Instance.playerCamera.transform.eulerAngles.y, Vector3.up) * rotation;
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
 
         character.SetDirection(GameObjectTool.WorldToLogic(this.transform.forward));
@@ -73,7 +82,7 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
             if (currentState != SkillBridge.Message.CharacterState.Idle)
             {
                 currentState = SkillBridge.Message.CharacterState.Idle;
-                myCharacterController.Move(Vector3.zero);
+                myCharacterController.SimpleMove(Vector3.zero);
                 this.character.Stop();
                 this.SendEntityEvent(EntityEvent.Idle);
             }
@@ -87,13 +96,42 @@ public class PlayerInputController : MonoSingleton<PlayerInputController>
                 this.SendEntityEvent(EntityEvent.MoveFwd);
             }
         }
-        float y = MainPlayerCamera.Instance.camera.transform.rotation.eulerAngles.y;
-        myCharacterController.SimpleMove(Quaternion.Euler(0, y, 0) * playerForword * this.character.speed / 100f);
+        myCharacterController.SimpleMove(Quaternion.Euler(0, MainPlayerCamera.Instance.playerCamera.transform.rotation.eulerAngles.y, 0) * playerForword * this.character.speed / 100f);
+        this.character.SetPosition(GameObjectTool.WorldToLogic(this.transform.position));
+    }
+
+    Vector3 lastPos1;
+    //float lastSync = 0;
+    private void LateUpdate()
+    {
+        if (this.character == null) return;
+
+        //Vector3 offset = this.transform.position - lastPos1;
+        //this.speed = (int)(offset.magnitude * 100f / Time.deltaTime);
+        //Debug.LogFormat("LateUpdate velocity {0} : {1}", this.rb.velocity.magnitude, this.speed);
+        //this.lastPos1 = this.transform.position;
+
+        //if ((GameObjectTool.WorldToLogic(this.transform.position) - this.character.position).magnitude > 50)
+        //{
+        //    this.character.SetPosition(GameObjectTool.WorldToLogic(this.transform.position));
+        //    this.SendEntityEvent(EntityEvent.None);
+        //}
+        //this.transform.position = this.transform.position;
+
+        if (lastPos != this.transform.position || lastDir != this.transform.forward)
+        {
+            MapService.Instance.SendMapEntitySyncRequest(currentEventState, character.EntityData);
+            lastPos = this.transform.position;
+            lastDir = this.transform.forward;
+        }
     }
 
     public void SendEntityEvent(EntityEvent entityEvent)
     {
+        currentEventState = entityEvent;
         if (entityController != null)
             entityController.OnEntityEvent(entityEvent);
+
+        MapService.Instance.SendMapEntitySyncRequest(currentEventState, character.EntityData);
     }
 }

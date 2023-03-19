@@ -16,7 +16,7 @@ namespace GameServer.Entities
         {
             get
             {
-                return this.entityId;
+                return this.Info.Id;
             }
         }
         public NCharacterInfo Info;

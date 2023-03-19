@@ -11,6 +11,7 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
     {
         StartCoroutine(InitGameObjects());
         CharacterManager.Instance.OnCharacterEnter = OnCharacterEnter;
+        CharacterManager.Instance.OnCharacterLeave = OnCharacterLeave;
     }
 
     void OnDestroy()
@@ -25,6 +26,11 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
     void OnCharacterEnter(Character cha)
     {
         CreateCharacterObject(cha);
+    }
+
+    void OnCharacterLeave(int characterId)
+    {
+        RemoveCharacterObject(characterId);
     }
 
     IEnumerator InitGameObjects()
@@ -48,17 +54,17 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
             return;
         }
 
-        GameObject go = (GameObject)Instantiate(obj);
+        GameObject go = (GameObject)Instantiate(obj, GameObjectTool.LogicToWorld(character.position), Quaternion.Euler(GameObjectTool.LogicToWorld(character.direction)));
         go.name = "Character_" + character.Info.Id + "_" + character.Info.Name;
-        go.transform.position = GameObjectTool.LogicToWorld(character.position);
-        go.transform.forward = GameObjectTool.LogicToWorld(character.direction);
         Characters.Add(character.Info.Id, go);
+        Debug.LogFormat("CreateCharacterObject:{0}: pos {1}  dir {2}", go.name, go.transform.position, go.transform.forward);
 
         EntityController ec = go.GetComponent<EntityController>();
         if (ec != null)
         {
             ec.entity = character;
             ec.isPlayer = character.IsPlayer;
+            EntityManager.Instance.RegisterEntityChangeNotify(character.entityId, ec);
         }
 
         PlayerInputController pc = go.GetComponent<PlayerInputController>();
@@ -69,6 +75,7 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
                 MainPlayerCamera.Instance.player = go;
                 pc.enabled = true;
                 pc.character = character;
+                pc.myCharacterController = go.GetComponent<CharacterController>();
                 pc.entityController = ec;
             }
             else
@@ -76,6 +83,18 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
                 pc.enabled = false;
             }
         }
-        //UIWorldElementManager.Instance.AddCharacterNameBar(go.transform, character);
+        WorldUIManager.Instance.CreateCharacterHeadInfo(go.transform, character);
+    }
+
+    private void RemoveCharacterObject(int characterId)
+    {
+        GameObject go;
+        if (!Characters.TryGetValue(characterId, out go))
+            return;
+
+        WorldUIManager.Instance.RemoveCharacterHeadInfo(go.transform);
+
+        Destroy(Characters[characterId]);
+        Characters.Remove(characterId);
     }
 }

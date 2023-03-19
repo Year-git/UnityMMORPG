@@ -11,6 +11,7 @@ using Common.Data;
 using Network;
 using GameServer.Managers;
 using GameServer.Entities;
+using GameServer.Services;
 
 namespace GameServer.Models
 {
@@ -52,13 +53,12 @@ namespace GameServer.Models
         /// <param name="character"></param>
         internal void CharacterEnter(NetConnection<NetSession> conn, Character character)
         {
-            Log.InfoFormat("CharacterEnter: Map:{0} characterId:{1}", this.ID, character.Id);
+            Log.InfoFormat("CharacterEnter: Map:{0} characterId:{1}", this.ID, character.Info.Id);
 
             character.Info.mapId = this.ID;
 
             NetMessage message = new NetMessage();
             message.Response = new NetMessageResponse();
-
             message.Response.mapCharacterEnter = new MapCharacterEnterResponse();
             message.Response.mapCharacterEnter.mapId = this.ID;
             message.Response.mapCharacterEnter.Characters.Add(character.Info);
@@ -71,7 +71,7 @@ namespace GameServer.Models
             }
 
             // 后添加自己到玩家列表，通知自己进入地图
-            this.MapCharacters[character.Id] = new MapCharacter(conn, character);
+            this.MapCharacters[character.Info.Id] = new MapCharacter(conn, character);
             byte[] data = PackageHandler.PackMessage(message);
             conn.SendData(data, 0, data.Length);
         }
@@ -80,7 +80,6 @@ namespace GameServer.Models
         {
             NetMessage message = new NetMessage();
             message.Response = new NetMessageResponse();
-
             message.Response.mapCharacterEnter = new MapCharacterEnterResponse();
             message.Response.mapCharacterEnter.mapId = this.Define.ID;
             message.Response.mapCharacterEnter.Characters.Add(character);
@@ -95,22 +94,22 @@ namespace GameServer.Models
         /// <param name="character"></param>
         internal void CharacterLeave(NetConnection<NetSession> conn, Character character)
         {
-            Log.InfoFormat("CharacterEnter: Map:{0} characterId:{1}", this.Define.ID, character.Id);
+            Log.InfoFormat("CharacterLeave: Map:{0} characterId:{1}", this.Define.ID, character.Info.Id);
 
             character.Info.mapId = this.ID;
 
             NetMessage message = new NetMessage();
             message.Response = new NetMessageResponse();
-
             message.Response.mapCharacterLeave = new MapCharacterLeaveResponse();
-            message.Response.mapCharacterLeave.characterId = character.Id;
+            message.Response.mapCharacterLeave.characterId = character.Info.Id;
 
             foreach (var kv in this.MapCharacters)
             {
                 this.SendCharacterLeaveMap(kv.Value.connection, character.Info);
             }
 
-            this.MapCharacters.Remove(character.Id);
+            this.MapCharacters.Remove(character.Info.Id);
+            CharacterManager.Instance.RemoveCharacter(conn.Session.Character.Info.Id);
 
             byte[] data = PackageHandler.PackMessage(message);
             conn.SendData(data, 0, data.Length);
@@ -120,12 +119,29 @@ namespace GameServer.Models
         {
             NetMessage message = new NetMessage();
             message.Response = new NetMessageResponse();
-
             message.Response.mapCharacterLeave = new MapCharacterLeaveResponse();
             message.Response.mapCharacterLeave.characterId = character.Id;
 
             byte[] data = PackageHandler.PackMessage(message);
             conn.SendData(data, 0, data.Length);
+        }
+        internal void UpdateEntity(NEntitySync entitySync)
+        {
+            foreach (var kv in this.MapCharacters)
+            {
+                if (kv.Value.character.entityId == entitySync.Id)
+                {
+                    kv.Value.character.SetEntityData(entitySync.Entity);
+                }
+                else
+                {
+                    NetMessage message = new NetMessage();
+                    message.Response = new NetMessageResponse();
+                    message.Response.mapEntitySync = new MapEntitySyncResponse();
+                    message.Response.mapEntitySync.entitySyncs.Add(entitySync);
+                    MapService.Instance.SendMapEntitySyncResponse(kv.Value.connection, message);
+                }
+            }
         }
     }
 }

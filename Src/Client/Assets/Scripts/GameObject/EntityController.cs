@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityController : MonoBehaviour
+public class EntityController : MonoBehaviour, IEntityNotify
 {
     public CharacterController myCharacterController;
     public Animator myAnimator;
@@ -14,11 +14,6 @@ public class EntityController : MonoBehaviour
 
     public Vector3 position;
     public Vector3 direction;
-    private Quaternion rotation;
-
-    private Vector3 lastPosition;
-    private Quaternion lastRotation;
-
 
     void Start()
     {
@@ -41,6 +36,7 @@ public class EntityController : MonoBehaviour
         if (entity != null)
             Debug.LogFormat("{0} OnDestroy :ID:{1} POS:{2} DIR:{3} SPD:{4} ", this.name, entity.entityId, entity.position, entity.direction, entity.speed);
 
+        EntityManager.Instance.RegisterEntityChangeNotify(entity.entityId, this);
     }
 
     // 更新实体信息
@@ -48,11 +44,14 @@ public class EntityController : MonoBehaviour
     {
         this.position = GameObjectTool.LogicToWorld(entity.position);
         this.direction = GameObjectTool.LogicToWorld(entity.direction);
-        this.myCharacterController.SimpleMove(this.position);
+
+        this.transform.position = this.position;
         this.transform.forward = this.direction;
-        this.rotation = this.transform.rotation;
-        this.lastPosition = this.position;
-        this.lastRotation = this.rotation;
+    }
+
+    public void OnEntityChanged(Entity entity)
+    {
+        Debug.LogFormat("{0} OnEntityChanged :ID:{1} POS:{2} DIR:{3} SPD:{4} ", this.name, entity.entityId, entity.position, entity.direction, entity.speed);
     }
 
     // 实体状态通知
@@ -71,5 +70,9 @@ public class EntityController : MonoBehaviour
                 myAnimator.SetFloat("Speed", entity.speed);
                 break;
         }
+    }
+
+    public void OnEntityRemoved()
+    {
     }
 }
