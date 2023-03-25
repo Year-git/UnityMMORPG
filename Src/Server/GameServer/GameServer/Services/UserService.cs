@@ -114,7 +114,7 @@ namespace GameServer.Services
         {
             if (sender.Session.Character != null)
             {
-                MapManager.Instance[sender.Session.Character.Data.MapID].CharacterLeave(sender, sender.Session.Character);
+                MapManager.Instance[sender.Session.Character.Info.mapId].CharacterLeave(sender, sender.Session.Character);
                 CharacterManager.Instance.RemoveCharacter(sender.Session.Character.Info.Id);
             }
 
@@ -185,7 +185,7 @@ namespace GameServer.Services
         void OnGameLeave(NetConnection<NetSession> sender, UserGameLeaveRequest request)
         {
             Log.InfoFormat("UserGameLeaveRequest");
-            MapManager.Instance[sender.Session.Character.Data.MapID].CharacterLeave(sender, sender.Session.Character);
+            MapManager.Instance[sender.Session.Character.Info.mapId].CharacterLeave(sender, sender.Session.Character);
             CharacterManager.Instance.RemoveCharacter(sender.Session.Character.Info.Id);
 
             NetMessage message = new NetMessage();

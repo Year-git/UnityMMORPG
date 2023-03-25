@@ -1,6 +1,7 @@
 ﻿using Entities;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -25,6 +26,11 @@ public class CharacterManager : MonoSingleton<CharacterManager>
 
     public void Clear()
     {
+        int[] keys = this.Characters.Keys.ToArray();
+        foreach (var key in keys)
+        {
+            this.RemoveCharacter(key);
+        }
         this.Characters.Clear();
     }
 
@@ -42,16 +48,16 @@ public class CharacterManager : MonoSingleton<CharacterManager>
         EntityManager.Instance.AddEntity(character);
     }
 
-
     public void RemoveCharacter(int characterId)
     {
-        if (!this.Characters.ContainsKey(characterId))
+        Character character = null;
+        if (!this.Characters.TryGetValue(characterId, out character))
             return;
         Debug.LogFormat("RemoveCharacter:{0}", characterId);
-
+        int entityId = character.entityId;
         this.Characters.Remove(characterId);
         if (OnCharacterLeave != null)
             OnCharacterLeave(characterId);
-        EntityManager.Instance.RemoveEntity(characterId);
+        EntityManager.Instance.RemoveEntity(entityId);
     }
 }

@@ -7,17 +7,13 @@ using UnityEngine.Events;
 public class GameObjectManager : MonoSingleton<GameObjectManager>
 {
     Dictionary<int, GameObject> Characters = new Dictionary<int, GameObject>();
-    void Start()
+    protected override void OnStart()
     {
         StartCoroutine(InitGameObjects());
-        CharacterManager.Instance.OnCharacterEnter = OnCharacterEnter;
-        CharacterManager.Instance.OnCharacterLeave = OnCharacterLeave;
+        CharacterManager.Instance.OnCharacterEnter += OnCharacterEnter;
+        CharacterManager.Instance.OnCharacterLeave += OnCharacterLeave;
     }
 
-    void OnDestroy()
-    {
-        CharacterManager.Instance.OnCharacterEnter = null;
-    }
     public void Init()
     {
 
@@ -44,8 +40,13 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
 
     private void CreateCharacterObject(Character character)
     {
-        if (Characters.ContainsKey(character.Info.Id))
+        GameObject go = null;
+        if (Characters.TryGetValue(character.Info.Id, out go))
+        {
+            go.transform.position = GameObjectTool.LogicToWorld(character.position);
+            go.transform.rotation = Quaternion.Euler(GameObjectTool.LogicToWorld(character.direction));
             return;
+        }
 
         Object obj = Resloader.LoadResources<Object>(character.Define.Resource);
         if (obj == null)
@@ -54,8 +55,9 @@ public class GameObjectManager : MonoSingleton<GameObjectManager>
             return;
         }
 
-        GameObject go = (GameObject)Instantiate(obj, GameObjectTool.LogicToWorld(character.position), Quaternion.Euler(GameObjectTool.LogicToWorld(character.direction)));
+        go = (GameObject)Instantiate(obj, GameObjectTool.LogicToWorld(character.position), Quaternion.Euler(GameObjectTool.LogicToWorld(character.direction)));
         go.name = "Character_" + character.Info.Id + "_" + character.Info.Name;
+        go.transform.parent = this.transform;
         Characters.Add(character.Info.Id, go);
         Debug.LogFormat("CreateCharacterObject:{0}: pos {1}  dir {2}", go.name, go.transform.position, go.transform.forward);
 

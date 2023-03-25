@@ -27,6 +27,7 @@ namespace Services
             MessageDistributer.Instance.Unsubscribe<MapCharacterLeaveResponse>(this.OnMapCharacterLeave);
             MessageDistributer.Instance.Unsubscribe<MapEntitySyncResponse>(this.OnMapEntitySyncResponse);
         }
+
         public void Init()
         {
             Debug.LogFormat("MapService:Init");
@@ -54,15 +55,11 @@ namespace Services
 
         void OnMapCharacterLeave(object sender, MapCharacterLeaveResponse response)
         {
-            Debug.LogFormat("OnMapCharacterLeave:{0}", response.characterId);
-            if (response.characterId == User.Instance.CurrentCharacter.Id)
-            {
-                this.LeaveMap();
-            }
-            else
-            {
+            Debug.LogFormat("OnMapCharacterLeave: CharID:{0}", response.characterId);
+            if (response.characterId != User.Instance.CurrentCharacter.Id)
                 CharacterManager.Instance.RemoveCharacter(response.characterId);
-            }
+            else
+                CharacterManager.Instance.Clear();
         }
 
         public void SendMapEntitySyncRequest(EntityEvent entityEvent, NEntity entity)
@@ -88,6 +85,17 @@ namespace Services
             }
         }
 
+        internal void SendMapTeleporter(int teleporterId)
+        {
+            Debug.LogFormat("SendMapTeleporter:  teleporterId:{0}", teleporterId);
+
+            NetMessage message = new NetMessage();
+            message.Request = new NetMessageRequest();
+            message.Request.mapTeleport = new MapTeleportRequest();
+            message.Request.mapTeleport.teleporterId = teleporterId;
+            UserService.Instance.SendMessage(message);
+        }
+
         void EnterMap(int mapId)
         {
             if (DataManager.Instance.Maps.ContainsKey(mapId))
@@ -99,16 +107,6 @@ namespace Services
             }
             else
                 Debug.LogErrorFormat("EnterMap: Map {0} not existed", mapId);
-        }
-
-        void LeaveMap()
-        {
-            currentMapId = 0;
-            User.Instance.CurrentCharacter = null;
-            CharacterManager.Instance.RemoveCharacter(User.Instance.CurrentCharacter.Id);
-            ViewManager.Instance.RemoveView("UIMain");
-            ViewManager.Instance.CreateView("UISelectCharacter");
-            SceneManager.Instance.LoadScene("SelectCharacter");
         }
     }
 }
